@@ -6,24 +6,56 @@ const public_users = express.Router();
 
 
 public_users.post("/register", (req, res) => {
-  //Write your code here
-  return res.status(300).json({ message: "Yet to be implemented" });
+  try {
+    const usernameBody = req.body.username;
+    const passwordBody = req.body.password;
+    if (!usernameBody || !passwordBody) {
+      return res.status(404).send({
+        status: false,
+        message: "Username or Password cannot be empty"
+      })
+    }
+    const userAvailabe = users.find((user) => user.username === usernameBody);
+    if (userAvailabe) {
+      return res.status(404).send({
+        status: false,
+        message: `Username ${usernameBody} is available`
+      })
+    }
+    const result = users.push({ "username": usernameBody, "password": passwordBody, });
+    if (!result) {
+      return res.status(404).send({
+        status: false,
+        message: "Account registered failed!!"
+      })
+    }
+    return res.status(201).send({
+      status: true,
+      message: `Account with username ${usernameBody} has been created!!`
+    })
+  } catch (error) {
+    return res.status(404).send({
+      status: false,
+      message: error.message
+    })
+  }
 });
+
+public_users.get('/cek', (req, res) => { return res.send(users) });
 
 // Get the book list available in the shop
 public_users.get('/', function (req, res) {
   try {
-    res.status(200).send({
+    return res.status(200).send({
       status: true,
       data: books,
     });
   } catch (error) {
-    res.status(404).json({
+    return res.status(404).json({
       status: false,
       message: error.message,
     });
   }
-  return res.status(300).json({ message: "Yet to be implemented" });
 });
 
 // Get book details based on ISBN
@@ -31,17 +63,16 @@ public_users.get('/isbn/:isbn', function (req, res) {
   const isbnParam = req.params.isbn;
   try {
     const response = books[parseInt(isbnParam)];
-    res.status(200).send({
+    return res.status(200).send({
       status: true,
       data: response,
     });
   } catch (error) {
-    res.status(404).json({
+    return res.status(404).json({
       status: false,
       message: error.message,
     });
   }
-  return res.status(300).json({ message: "Yet to be implemented" });
 });
 
 // Get book details based on author
@@ -56,23 +87,22 @@ public_users.get('/author/:author', function (req, res) {
       }
     })
     if (bookResult.length > 0) {
-      res.status(200).send({
+      return res.status(200).send({
         status: true,
         data: bookResult,
       });
     } else {
-      res.status(404).json({
+      return res.status(404).json({
         status: false,
         message: "Author is undefined",
       });
     }
   } catch (error) {
-    res.status(404).json({
+    return res.status(404).json({
       status: false,
       message: error.message,
     });
   }
-  return res.status(300).json({ message: "Yet to be implemented" });
 });
 
 // Get all books based on title
@@ -87,23 +117,22 @@ public_users.get('/title/:title', function (req, res) {
       }
     })
     if (bookResult.length > 0) {
-      res.status(200).send({
+      return res.status(200).send({
         status: true,
         data: bookResult,
       });
     } else {
-      res.status(404).json({
+      return res.status(404).json({
         status: false,
         message: "Title is undefined",
       });
     }
   } catch (error) {
-    res.status(404).json({
+    return res.status(404).json({
       status: false,
       message: error.message,
     });
   }
-  return res.status(300).json({ message: "Yet to be implemented" });
 });
 
 //  Get book review
@@ -111,17 +140,16 @@ public_users.get('/review/:isbn', function (req, res) {
   const isbnParam = req.params.isbn;
   try {
     const response = books[parseInt(isbnParam)];
-    res.status(200).send({
+    return res.status(200).send({
       status: true,
       reviews: response.reviews,
     });
   } catch (error) {
-    res.status(404).json({
+    return res.status(404).json({
       status: false,
       message: error.message,
     });
   }
-  return res.status(300).json({ message: "Yet to be implemented" });
 });
 
 module.exports.general = public_users;
