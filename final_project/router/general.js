@@ -51,7 +51,7 @@ public_users.get('/author/:author', function (req, res) {
     const bookKeys = Object.keys(books);
     const bookResult = [];
     bookKeys.forEach((key) => {
-      if (books[key].author === authorParam) {
+      if (books[key].author.includes(authorParam)) {
         bookResult.push(books[key]);
       }
     })
@@ -77,13 +77,50 @@ public_users.get('/author/:author', function (req, res) {
 
 // Get all books based on title
 public_users.get('/title/:title', function (req, res) {
-  //Write your code here
+  try {
+    const titleParam = req.params.title.toString();
+    const bookKeys = Object.keys(books);
+    const bookResult = [];
+    bookKeys.forEach((key) => {
+      if (books[key].title.includes(titleParam)) {
+        bookResult.push(books[key]);
+      }
+    })
+    if (bookResult.length > 0) {
+      res.status(200).send({
+        status: true,
+        data: bookResult,
+      });
+    } else {
+      res.status(404).json({
+        status: false,
+        message: "Title is undefined",
+      });
+    }
+  } catch (error) {
+    res.status(404).json({
+      status: false,
+      message: error.message,
+    });
+  }
   return res.status(300).json({ message: "Yet to be implemented" });
 });
 
 //  Get book review
 public_users.get('/review/:isbn', function (req, res) {
-  //Write your code here
+  const isbnParam = req.params.isbn;
+  try {
+    const response = books[parseInt(isbnParam)];
+    res.status(200).send({
+      status: true,
+      reviews: response.reviews,
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: false,
+      message: error.message,
+    });
+  }
   return res.status(300).json({ message: "Yet to be implemented" });
 });
 
