@@ -20,6 +20,23 @@ Content-Type: application/json
 }
 
 ###
+POST http://localhost:5000/customer/login
+Content-Type: application/json
+
+{
+    "username":"Jon",
+    "password":"Lovato11"
+}
+
+###
+PUT http://localhost:5000/customer/auth/review/1
+Content-Type: application/json
+
+{
+    "reviews":"Jon"
+}
+
+###
 GET http://localhost:5000/cek
 
 ###

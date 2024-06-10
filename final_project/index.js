@@ -25,6 +25,21 @@ app.use("/customer/auth/*", function auth(req, res, next) {
     // } else {
     //     return res.status(403).json({ message: "User not logged in" })
     // }
+
+    if (!req.session || !req.session.accessToken) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+        // Verify the access token stored in the session
+        const decoded = jwt.verify(req.session.accessToken, "its_mY-secReT-KeY");
+        req.user = decoded;
+        next();
+    } catch (error) {
+        // If the token is invalid, clear the session and send an error response
+        req.session.destroy();
+        return res.status(401).json({ error: "Unauthorized" });
+    }
 });
 
 const PORT = 5000;
