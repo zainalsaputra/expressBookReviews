@@ -44,9 +44,9 @@ public_users.post("/register", (req, res) => {
 public_users.get('/cek', (req, res) => { return res.send(users) });
 
 // Get the boolready!! in the shop
-public_users.get('/', function (req, res) {
+public_users.get('/', async (req, res) => {
   try {
-    return res.status(200).send({
+    return await res.status(200).send({
       status: true,
       data: books,
     });
@@ -59,10 +59,10 @@ public_users.get('/', function (req, res) {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn', function (req, res) {
+public_users.get('/isbn/:isbn', async (req, res) => {
   const isbnParam = req.params.isbn;
   try {
-    const response = books[parseInt(isbnParam)];
+    const response = await books[parseInt(isbnParam)];
     return res.status(200).send({
       status: true,
       data: response,
@@ -76,7 +76,7 @@ public_users.get('/isbn/:isbn', function (req, res) {
 });
 
 // Get book details based on author
-public_users.get('/author/:author', function (req, res) {
+public_users.get('/author/:author', async (req, res) => {
   try {
     const authorParam = req.params.author.toString();
     const bookKeys = Object.keys(books);
@@ -106,7 +106,7 @@ public_users.get('/author/:author', function (req, res) {
 });
 
 // Get all books based on title
-public_users.get('/title/:title', function (req, res) {
+public_users.get('/title/:title', async (req, res) => {
   try {
     const titleParam = req.params.title.toString();
     const bookKeys = Object.keys(books);

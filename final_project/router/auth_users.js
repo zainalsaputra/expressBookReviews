@@ -82,7 +82,7 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
     books[isbn].reviews[username] = reviewBody;
 
-    return res.status(200).send({ status: true, message: "Review added/modified successfully" });
+    return res.status(200).send({ status: true, message: "Review added/modified successfully", data: books[isbn] });
   } catch (error) {
     res.status(400).send({
       status: false,
