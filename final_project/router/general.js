@@ -15,11 +15,11 @@ public_users.post("/register", (req, res) => {
         message: "Username or Password cannot be empty"
       })
     }
-    const userAvailabe = users.find((user) => user.username === usernameBody);
-    if (userAvailabe) {
+
+    if (isValid(usernameBody)) {
       return res.status(404).send({
         status: false,
-        message: `Username ${usernameBody} is available`
+        message: `Username ${usernameBody} is already!!`
       })
     }
     const result = users.push({ "username": usernameBody, "password": passwordBody, });
@@ -43,7 +43,7 @@ public_users.post("/register", (req, res) => {
 
 public_users.get('/cek', (req, res) => { return res.send(users) });
 
-// Get the book list available in the shop
+// Get the boolready!! in the shop
 public_users.get('/', function (req, res) {
   try {
     return res.status(200).send({

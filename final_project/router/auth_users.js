@@ -13,10 +13,6 @@ const isValid = (username) => { //returns boolean
 
 const authenticatedUser = (username, password) => { //returns boolean
   const user = users.find((user) => user.username === username && user.password === password);
-  // if (!user) {
-  //   return false;
-  // }
-  // return true;
   return !!user;
 }
 
