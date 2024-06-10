@@ -41,7 +41,7 @@ regd_users.post("/login", (req, res) => {
     const user = users.find((user) => user.username === usernameBody);
     console.log(isValid(usernameBody));
     if (!user) {
-      return res.status(401).json({ message: "User not found." });
+      return res.status(401).send({ status: false, message: "User not found." });
     }
 
     const accessToken = jwt.sign({ username: user.username }, 'its_mY-secReT-KeY');
@@ -59,7 +59,6 @@ regd_users.post("/login", (req, res) => {
       message: error.message
     })
   }
-  // return res.status(300).json({ message: "Yet to be implemented" });
 });
 
 // Add a book review
@@ -69,18 +68,16 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   const username = req.user.username;
 
   try {
-    console.log(username);
-
     if (!reviewBody) {
-      return res.status(400).json({ message: "Review is required" });
+      return res.status(400).send({ status: false, message: "Review is required" });
     }
 
     if (!username) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).send({ status: false, message: "Unauthorized" });
     }
 
     if (!books[isbn]) {
-      return res.status(404).json({ message: "Book not found" });
+      return res.status(404).send({ status: false, message: "Book not found" });
     }
 
     if (!books[isbn].reviews) {
@@ -89,15 +86,44 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
 
     books[isbn].reviews[username] = reviewBody;
 
-    return res.status(200).json({ message: "Review added/modified successfully" });
+    return res.status(200).send({ status: true, message: "Review added/modified successfully" });
   } catch (error) {
     res.status(400).send({
       status: false,
       message: error.message
     })
   }
+});
 
-  // return res.status(300).json({ message: "Yet to be implemented" });
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+  const isbn = req.params.isbn;
+  const username = req.user.username;
+
+  try {
+    if (!username) {
+      return res.status(401).send({ status: false, message: "Unauthorized" });
+    }
+
+    if (!isValid(username)) {
+      return res.status(401).send({ status: false, message: "Invalid username" });
+    }
+
+    if (!books[isbn]) {
+      return res.status(400).send({ status: false, message: "Invalid ISBN" });
+    }
+
+    if (!books[isbn].reviews[username]) {
+      return res.status(400).send({ status: false, message: "Review not found for the given ISBN and username" });
+    }
+
+    delete books[isbn].reviews[username];
+    return res.status(200).send({ status: true, message: "Review deleted successfully" });
+  } catch (error) {
+    res.status(500).send({
+      status: false,
+      message: error.message
+    })
+  }
 });
 
 module.exports.authenticated = regd_users;
